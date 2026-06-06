@@ -1,10 +1,21 @@
-INFO:     Started server process [70939]
+INFO:     Started server process [97862]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:52144 - "GET /hardware HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52144 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32826 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32826 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32826 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32842 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32826 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32826 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32826 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32826 - "OPTIONS /start-training HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32842 - "POST /start-training HTTP/1.1" 200 OK
+Starting training with config: {'mode': 'Auto-Pilot (Optimized)'}
+Epoch 1 training... Loss: 2.3750
+INFO:     127.0.0.1:32826 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32842 - "GET /hardware HTTP/1.1" 200 OK
+Epoch 2 training... Loss: 2.2563
+INFO:     127.0.0.1:32842 - "GET /training-status HTTP/1.1" 200 OK
 INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [70939]
+INFO:     Waiting for background tasks to complete. (CTRL+C to force quit)

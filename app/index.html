@@ -1,140 +1,478 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>OmniTrain AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniTrain AI - Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background: #1e1e1e; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; }
-        .card { background: #2d2d2d; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        h1 { color: #00ff88; }
-        .status { color: #aaa; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { background: #444; border: none; color: white; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
-        .tab-btn.active { background: #00ff88; color: #000; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-color: #1e293b;
+            --accent-color: #38bdf8;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-color);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            transition: width 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent-color);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            width: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent);
+        }
+
+        .header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 { margin: 0; font-size: 2rem; }
+        .subtitle { color: var(--text-secondary); margin-top: 4px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Tabs Content */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Training Specifics */
+        .model-builder-canvas {
+            height: 400px;
+            background: #020617;
+            border-radius: 12px;
+            border: 2px dashed #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover { opacity: 0.9; }
+
+        .btn-secondary {
+            background: #334155;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        input, select {
+            background: #0f172a;
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            margin-top: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Resource bars */
+        .progress-container {
+            background: #334155;
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>OmniTrain AI</h1>
-        <p class="status">Universal AI Training Studio</p>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('hardware')">Hardware</button>
-            <button class="tab-btn" onclick="showTab('data')">Data Engine</button>
-            <button class="tab-btn" onclick="showTab('training')">Training</button>
-            <button class="tab-btn" onclick="showTab('cloud')">Cloud</button>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-brain"></i> OmniTrain AI
         </div>
-
-        <div id="hardware" class="tab-content active">
-            <div class="card" id="hardware-card">
-                <h2>Hardware Detection</h2>
-                <div id="hardware-info">Loading...</div>
-            </div>
+        <div class="nav-item active" onclick="navigate('dashboard')">
+            <i class="fas fa-chart-line"></i> Dashboard
         </div>
-
-        <div id="data" class="tab-content">
-            <div class="card">
-                <h2>Universal Data Engine</h2>
-                <p>Drop your files here (Text, Image, 3D, Minecraft)</p>
-                <input type="file" id="data-upload" multiple>
-                <button onclick="uploadData()">Process Data</button>
-                <div id="data-status"></div>
-            </div>
+        <div class="nav-item" onclick="navigate('data-lab')">
+            <i class="fas fa-database"></i> Data Lab
         </div>
-
-        <div id="cloud" class="tab-content">
-            <div class="card">
-                <h2>Cloud Integration</h2>
-                <p>Connect to external GPUs for faster training.</p>
-                <input type="text" id="cloud-api-key" placeholder="API Key">
-                <input type="text" id="cloud-url" placeholder="Cloud Provider URL">
-                <br><br>
-                <button onclick="saveCloudConfig()">Save Configuration</button>
-                <div id="cloud-status">Status: Local Only</div>
-            </div>
+        <div class="nav-item" onclick="navigate('builder')">
+            <i class="fas fa-cubes"></i> Model Builder
         </div>
+        <div class="nav-item" onclick="navigate('training')">
+            <i class="fas fa-microchip"></i> Training
+        </div>
+        <div class="nav-item" onclick="navigate('templates')">
+            <i class="fas fa-layer-group"></i> Template Gallery
+        </div>
+        <div class="nav-item" onclick="navigate('cloud')">
+            <i class="fas fa-cloud"></i> Cloud GPU
+        </div>
+        <div style="flex: 1;"></div>
+        <div class="nav-item" onclick="navigate('settings')">
+            <i class="fas fa-cog"></i> Settings
+        </div>
+    </div>
 
-        <div id="training" class="tab-content">
-            <div class="card">
-                <h2>Training Engine</h2>
-                <div class="tabs">
-                    <button class="tab-btn active" onclick="setMode('auto')">Auto-Pilot</button>
-                    <button class="tab-btn" onclick="setMode('lego')">Lego-Builder</button>
+    <div class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+            <div class="header">
+                <div>
+                    <h1>System Dashboard</h1>
+                    <p class="subtitle">Live hardware diagnostics and suggestions</p>
                 </div>
-                <div id="mode-content">
-                    <p>Select Model Type:</p>
-                    <select id="model-type">
-                        <option value="text">Text (LLM)</option>
-                        <option value="image">Image Gen</option>
-                        <option value="3d">3D City Builder</option>
-                        <option value="minecraft">Minecraft Architect</option>
+                <div class="status-badge">System Optimized</div>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h2><i class="fas fa-microchip"></i> Hardware Specs</h2>
+                    <div id="hw-details">
+                        <p>CPU Cores: --</p>
+                        <div class="progress-container"><div id="cpu-bar" class="progress-bar"></div></div>
+                        <p>RAM: --</p>
+                        <div class="progress-container"><div id="ram-bar" class="progress-bar"></div></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-star"></i> AI Capability</h2>
+                    <p id="capability-text">Scanning system...</p>
+                    <p class="subtitle" style="font-size: 0.9rem;">Recommended: Fine-tune 7B Models via QLoRA</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Lab Page -->
+        <div id="data-lab" class="page">
+            <div class="header">
+                <h1>Data Lab</h1>
+                <p class="subtitle">Clean, optimize and augment your training data</p>
+            </div>
+            <div class="card">
+                <p>Universal Data Engine (UDE) v1.0</p>
+                <div style="border: 2px dashed #334155; padding: 40px; text-align: center; border-radius: 12px;">
+                    <i class="fas fa-file-upload" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                    <p>Drag files or folders here</p>
+                    <p class="subtitle">Supports: .txt, .pdf, .jpg, .obj, .litematica, .schematic</p>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn" onclick="simulateDataAction('Cleaning')">Auto-Clean</button>
+                    <button class="btn btn-secondary" onclick="simulateDataAction('Optimizing')">Optimize for 3D</button>
+                    <button class="btn btn-secondary" onclick="simulateDataAction('Redacting PII')">Remove PII</button>
+                    <button class="btn btn-secondary" onclick="simulateDataAction('Auto-Cropping')">Auto-Crop</button>
+                </div>
+                <div id="data-log" style="margin-top: 20px; font-family: monospace; font-size: 0.8rem; color: #10b981;"></div>
+            </div>
+        </div>
+
+        <!-- Model Builder Page -->
+        <div id="builder" class="page">
+            <div class="header">
+                <h1>Visual Model Builder</h1>
+                <p class="subtitle">Lego-style architecture designer</p>
+            </div>
+            <div class="card">
+                <div class="model-builder-canvas" id="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <p id="canvas-placeholder"><i class="fas fa-plus"></i> Drag components to start building architecture</p>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-input">Input Block</div>
+                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-transformer">Transformer Layer</div>
+                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-dense">Dense Block</div>
+                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-output">Output Block</div>
+                    <div style="flex: 1;"></div>
+                    <button class="btn" onclick="validateArch()">Validate Arch</button>
+                    <button class="btn btn-secondary" onclick="clearCanvas()">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Page -->
+        <div id="training" class="page">
+            <div class="header">
+                <h1>Training Engine</h1>
+                <p class="subtitle">Fast, accurate, and resource-aware training</p>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <h2>Training Config</h2>
+                    <label>Training Mode</label>
+                    <select id="train-mode">
+                        <option>Auto-Pilot (Optimized)</option>
+                        <option>Manual (Advanced)</option>
+                        <option>Low-Spec (CPU Only)</option>
                     </select>
-                    <br><br>
-                    <button onclick="startTraining()">Start Training</button>
+                    <label>Target Model</label>
+                    <input type="text" placeholder="e.g. Llama-3-8B-Instruct">
+                    <button class="btn" style="width: 100%;" onclick="startTraining()">Launch Training</button>
                 </div>
+                <div class="card">
+                    <h2>Live Monitor</h2>
+                    <p>Epoch: <span id="monitor-epoch">0</span></p>
+                    <p>Loss: <span id="monitor-loss">0.000</span></p>
+                    <div style="height: 100px; background: #020617; border-radius: 8px; display: flex; align-items: flex-end; padding: 10px; gap: 2px;" id="loss-graph"></div>
+                    <p class="subtitle" style="margin-top: 10px;">Throttling status: <span id="throttle-status" style="color: #22c55e;">Idle</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Templates Page -->
+        <div id="templates" class="page">
+            <div class="header">
+                <h1>Template Gallery</h1>
+                <p class="subtitle">Quick-start with pre-configured models</p>
+            </div>
+            <div class="grid">
+                <div class="card" onclick="loadTemplate('llama')">
+                    <h2><i class="fas fa-comment"></i> Llama-3 Fine-tuner</h2>
+                    <p class="subtitle">Optimized for chat and instruction following.</p>
+                    <button class="btn" style="width: 100%; margin-top: 10px;">Select Template</button>
+                </div>
+                <div class="card" onclick="loadTemplate('sd')">
+                    <h2><i class="fas fa-image"></i> Stable Diffusion</h2>
+                    <p class="subtitle">Fine-tune image generation with LoRA.</p>
+                    <button class="btn" style="width: 100%; margin-top: 10px;">Select Template</button>
+                </div>
+                <div class="card" onclick="loadTemplate('minecraft')">
+                    <h2><i class="fas fa-cube"></i> Minecraft Architect</h2>
+                    <p class="subtitle">Train models to generate schematics.</p>
+                    <button class="btn" style="width: 100%; margin-top: 10px;">Select Template</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloud Page -->
+        <div id="cloud" class="page">
+            <div class="header">
+                <h1>Cloud Integration</h1>
+                <p class="subtitle">Access H100s and A100s with one click</p>
+            </div>
+            <div class="card">
+                <p>Connected Cloud Provider: None</p>
+                <input type="text" placeholder="API Key / Token">
+                <button class="btn">Connect Provider</button>
             </div>
         </div>
     </div>
 
+    <style>
+        .dropped-block {
+            background: var(--accent-color);
+            color: #0f172a;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 5px;
+            cursor: move;
+            display: inline-block;
+            font-weight: bold;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+
     <script>
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.target.classList.add('active');
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const original = document.getElementById(data);
+            const clone = document.createElement("div");
+            clone.className = "dropped-block";
+            clone.innerText = original.innerText;
+
+            document.getElementById("canvas-placeholder").style.display = "none";
+            document.getElementById("canvas").appendChild(clone);
         }
 
-        async function fetchHardware() {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/hardware');
-                const data = await response.json();
-                document.getElementById('hardware-info').innerHTML = `
-                    <p><strong>CPU Cores:</strong> ${data.specs.cpu_count}</p>
-                    <p><strong>RAM:</strong> ${data.specs.ram_total_gb} GB</p>
-                    <p><strong>GPUs:</strong> ${data.specs.gpus.length > 0 ? data.specs.gpus.map(g => g.name).join(', ') : 'None'}</p>
-                    <p><strong>Suggested Capability:</strong> ${data.capability}</p>
-                `;
-            } catch (e) {
-                document.getElementById('hardware-info').innerText = 'Backend not connected.';
+        function clearCanvas() {
+            const canvas = document.getElementById("canvas");
+            canvas.innerHTML = '<p id="canvas-placeholder"><i class="fas fa-plus"></i> Drag components to start building architecture</p>';
+        }
+
+        function validateArch() {
+            const blocks = document.querySelectorAll(".dropped-block");
+            if (blocks.length < 2) {
+                alert("Architecture too simple. Add more blocks.");
+            } else {
+                alert(`Architecture Validated: ${blocks.length} layers detected.`);
             }
         }
 
-        async function uploadData() {
-            const status = document.getElementById('data-status');
-            status.innerText = "Processing...";
-            // In a real app, we would send the file path to the backend
-            // Here we simulate it
+        function navigate(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(pageId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        async function updateHW() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/hardware');
+                const data = await response.json();
+                document.getElementById('hw-details').innerHTML = `
+                    <p><i class="fas fa-microchip"></i> CPU: ${data.specs.cpu_count} Cores (${data.cpu_usage}%)</p>
+                    <div class="progress-container"><div style="width: ${data.cpu_usage}%" class="progress-bar"></div></div>
+                    <p><i class="fas fa-memory"></i> RAM: ${data.specs.ram_total_gb} GB</p>
+                    <div class="progress-container"><div style="width: 50%" class="progress-bar"></div></div>
+                    <p><i class="fas fa-video"></i> GPU: ${data.specs.gpus.length > 0 ? data.specs.gpus[0].name : 'None'}</p>
+                `;
+                document.getElementById('capability-text').innerText = data.capability;
+            } catch (e) {
+                console.log("Backend not ready");
+            }
+        }
+
+        function simulateDataAction(action) {
+            const log = document.getElementById('data-log');
+            log.innerText = `${action} in progress...`;
             setTimeout(() => {
-                status.innerText = "Data cleaned and ready for training!";
+                log.innerText = `Data ${action} successfully. Ready for training.`;
             }, 2000);
         }
 
+        function loadTemplate(name) {
+            alert(`Template ${name} loaded. Switching to Training.`);
+            navigate('training');
+        }
+
         async function startTraining() {
-            const type = document.getElementById('model-type').value;
-            alert(`Starting training for ${type}. Check backend logs.`);
+            const mode = document.getElementById('train-mode').value;
             await fetch('http://127.0.0.1:8000/start-training', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: type })
+                body: JSON.stringify({ mode: mode })
             });
+            alert("Training Engine Initiated.");
         }
 
-        function setMode(mode) {
-            // Simplified mode switch
-            console.log("Switched to", mode);
+        async function updateMonitor() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/training-status');
+                const data = await response.json();
+                document.getElementById('monitor-epoch').innerText = data.epoch;
+                document.getElementById('monitor-loss').innerText = data.loss;
+
+                if (data.is_training) {
+                    const bar = document.createElement("div");
+                    bar.style.width = "4px";
+                    bar.style.height = `${Math.min(100, data.loss * 20)}%`;
+                    bar.style.background = "var(--accent-color)";
+                    const graph = document.getElementById('loss-graph');
+                    graph.appendChild(bar);
+                    if (graph.children.length > 50) graph.removeChild(graph.firstChild);
+                    document.getElementById('throttle-status').innerText = "Active";
+                    document.getElementById('throttle-status').style.color = "#fbbf24";
+                } else {
+                    document.getElementById('throttle-status').innerText = "Idle";
+                    document.getElementById('throttle-status').style.color = "#22c55e";
+                }
+            } catch (e) {}
         }
 
-        async function saveCloudConfig() {
-            const key = document.getElementById('cloud-api-key').value;
-            const url = document.getElementById('cloud-url').value;
-            document.getElementById('cloud-status').innerText = "Status: Cloud Connected";
-            alert("Cloud configuration saved locally.");
-        }
-
-        setInterval(fetchHardware, 3000);
-        fetchHardware();
+        setInterval(updateHW, 3000);
+        setInterval(updateMonitor, 1000);
+        updateHW();
     </script>
 </body>
 </html>

@@ -13,6 +13,8 @@ class TrainingEngine:
     def __init__(self):
         self.is_training = False
         self.throttle_limit = 0.8 # 80% CPU limit
+        self.current_loss = 0.0
+        self.current_epoch = 0
 
     def load_model(self, model_id, quantization="4bit"):
         if not torch:
@@ -36,15 +38,18 @@ class TrainingEngine:
 
     def start_training(self, config):
         self.is_training = True
+        self.current_loss = 2.5
         print(f"Starting training with config: {config}")
 
         # Simulated training loop with throttle
-        for i in range(100):
+        for i in range(1, 101):
             if not self.is_training:
                 break
 
+            self.current_epoch = i
+            self.current_loss *= 0.95 # Simulated descent
             self.apply_throttle()
-            print(f"Epoch {i+1} training...")
+            print(f"Epoch {i} training... Loss: {self.current_loss:.4f}")
             time.sleep(1)
 
         self.is_training = False
