@@ -19,8 +19,9 @@ function createWindow() {
 }
 
 function startBackend() {
-  // In a real scenario, we'd handle the python path and environment properly
-  backendProcess = spawn('python3', ['backend/main.py']);
+  // Use a portable python command
+  const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+  backendProcess = spawn(pythonCmd, ['backend/main.py']);
 
   backendProcess.stdout.on('data', (data) => {
     console.log(`Backend: ${data}`);

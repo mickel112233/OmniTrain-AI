@@ -63,6 +63,11 @@ class TrainingEngine:
     def stop_training(self):
         self.is_training = False
 
+    def import_from_url(self, url):
+        # Logic to clone/download from URL
+        print(f"Importing project from {url}...")
+        return {"status": "Imported", "local_path": "/tmp/imported_project"}
+
     def auto_detect_github(self, repo_url):
         # Logic to parse github repo and find train.py or similar
         return {"main_script": "train.py", "detected_framework": "pytorch"}

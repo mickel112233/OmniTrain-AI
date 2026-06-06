@@ -6,6 +6,7 @@ import GPUtil
 from hardware_detector import HardwareDetector
 from data_engine import DataEngine
 from training_engine import TrainingEngine
+from local_ai import LocalAIAssistant
 
 app = FastAPI()
 
@@ -20,6 +21,8 @@ app.add_middleware(
 detector = HardwareDetector()
 data_engine = DataEngine()
 training_engine = TrainingEngine()
+local_ai = LocalAIAssistant()
+local_ai.setup()
 
 class HardwareInfo(BaseModel):
     cpu_usage: float
@@ -54,6 +57,11 @@ async def data_action(action: str, file_path: str):
         return data_engine.auto_crop_images(file_path)
     return {"error": "Action not found"}
 
+@app.post("/import-project")
+async def import_project(data: dict):
+    url = data.get("url")
+    return training_engine.import_from_url(url)
+
 @app.post("/start-training")
 async def start_training(config: dict, background_tasks: BackgroundTasks):
     background_tasks.add_task(training_engine.start_training, config)
@@ -61,11 +69,18 @@ async def start_training(config: dict, background_tasks: BackgroundTasks):
 
 @app.get("/training-status")
 def get_training_status():
-    return {
+    status = {
         "is_training": training_engine.is_training,
         "epoch": training_engine.current_epoch,
         "loss": round(training_engine.current_loss, 4)
     }
+    status["ai_tip"] = local_ai.get_optimization_tip(status)
+    return status
+
+@app.post("/ai-chat")
+async def ai_chat(message: dict):
+    response = local_ai.generate_response(message.get("prompt", ""))
+    return {"response": response}
 
 if __name__ == "__main__":
     import uvicorn

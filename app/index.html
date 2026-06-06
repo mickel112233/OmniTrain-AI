@@ -3,476 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OmniTrain AI - Pro</title>
+    <title>OmniTrain AI Ultra-Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --sidebar-color: #1e293b;
-            --accent-color: #38bdf8;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-color);
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            transition: width 0.3s ease;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-item {
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-secondary);
-            transition: all 0.2s ease;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(56, 189, 248, 0.1);
-            color: var(--accent-color);
-        }
-
-        .nav-item i {
-            font-size: 1.2rem;
-            width: 24px;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent);
-        }
-
-        .header {
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        h1 { margin: 0; font-size: 2rem; }
-        .subtitle { color: var(--text-secondary); margin-top: 4px; }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Tabs Content */
-        .page { display: none; }
-        .page.active { display: block; }
-
-        /* Training Specifics */
-        .model-builder-canvas {
-            height: 400px;
-            background: #020617;
-            border-radius: 12px;
-            border: 2px dashed #334155;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn {
-            background: var(--accent-color);
-            color: #0f172a;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover { opacity: 0.9; }
-
-        .btn-secondary {
-            background: #334155;
-            color: white;
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
-        }
-
-        input, select {
-            background: #0f172a;
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 10px;
-            border-radius: 6px;
-            width: 100%;
-            margin-top: 8px;
-            margin-bottom: 16px;
-        }
-
-        /* Resource bars */
-        .progress-container {
-            background: #334155;
-            height: 8px;
-            border-radius: 4px;
-            margin-top: 8px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            border-radius: 4px;
-            background: var(--accent-color);
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <i class="fas fa-brain"></i> OmniTrain AI
-        </div>
-        <div class="nav-item active" onclick="navigate('dashboard')">
-            <i class="fas fa-chart-line"></i> Dashboard
-        </div>
-        <div class="nav-item" onclick="navigate('data-lab')">
-            <i class="fas fa-database"></i> Data Lab
-        </div>
-        <div class="nav-item" onclick="navigate('builder')">
-            <i class="fas fa-cubes"></i> Model Builder
-        </div>
-        <div class="nav-item" onclick="navigate('training')">
-            <i class="fas fa-microchip"></i> Training
-        </div>
-        <div class="nav-item" onclick="navigate('templates')">
-            <i class="fas fa-layer-group"></i> Template Gallery
-        </div>
-        <div class="nav-item" onclick="navigate('cloud')">
-            <i class="fas fa-cloud"></i> Cloud GPU
-        </div>
-        <div style="flex: 1;"></div>
-        <div class="nav-item" onclick="navigate('settings')">
-            <i class="fas fa-cog"></i> Settings
+    <!-- Setup Agreement -->
+    <div id="setup-agreement" class="overlay">
+        <div class="setup-box glass-card">
+            <h1 style="font-size: 2.5rem; margin-bottom: 24px;">OmniTrain AI Setup</h1>
+            <p style="color: var(--text-mid); margin-bottom: 32px;">To ensure optimal performance, OmniTrain will perform a one-time optimization of your system dependencies.</p>
+
+            <div style="text-align: left; margin-bottom: 40px;">
+                <div class="requirement-item">
+                    <span><i class="fas fa-microchip"></i> Hardware Scanning</span>
+                    <span style="color: var(--success);">READY</span>
+                </div>
+                <div class="requirement-item">
+                    <span><i class="fas fa-hdd"></i> Required Space</span>
+                    <span style="color: var(--accent);">~2.4 GB</span>
+                </div>
+                <div class="requirement-item">
+                    <span><i class="fas fa-clock"></i> Estimated Time</span>
+                    <span style="color: var(--accent);">5-10 Minutes</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 16px; justify-content: center;">
+                <button class="btn-pro" onclick="acceptSetup()">AGREE & PROCEED</button>
+                <button class="btn-pro secondary" onclick="window.close()">CANCEL</button>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-low); margin-top: 24px;">By proceeding, you agree to allow OmniTrain to manage local Python environments.</p>
         </div>
     </div>
 
-    <div class="main-content">
-        <!-- Dashboard Page -->
-        <div id="dashboard" class="page active">
-            <div class="header">
+    <!-- Project Launcher -->
+    <div id="launcher" class="launcher-overlay overlay hidden">
+        <h1 style="font-size: 3rem; margin-bottom: 12px;">Welcome to OmniTrain Pro</h1>
+        <p style="color: var(--text-mid); margin-bottom: 60px; font-size: 1.2rem;">Select your entry point to start training</p>
+
+        <div class="launcher-grid">
+            <div class="launcher-card" onclick="startProject('template')">
+                <i class="fas fa-layer-group"></i>
                 <div>
-                    <h1>System Dashboard</h1>
-                    <p class="subtitle">Live hardware diagnostics and suggestions</p>
+                    <h3>Choose Template</h3>
+                    <p>Start with pre-optimized models for LLMs, Image Gen, or Minecraft.</p>
                 </div>
-                <div class="status-badge">System Optimized</div>
+            </div>
+            <div class="launcher-card" onclick="startProject('blank')">
+                <i class="fas fa-plus"></i>
+                <div>
+                    <h3>Blank Project</h3>
+                    <p>Design a custom architecture from scratch using Node-by-Node builder.</p>
+                </div>
+            </div>
+            <div class="launcher-card" onclick="startProject('url')">
+                <i class="fas fa-link"></i>
+                <div>
+                    <h3>Import from URL</h3>
+                    <p>Clone a repository or download a pre-trained model directly.</p>
+                </div>
+            </div>
+            <div class="launcher-card" onclick="startProject('import')">
+                <i class="fas fa-file-import"></i>
+                <div>
+                    <h3>Import Local</h3>
+                    <p>Select a model file or dataset from your local machine.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="side-logo"><i class="fas fa-bolt"></i></div>
+            <div class="nav-icon active" onclick="switchTab('dashboard')">
+                <i class="fas fa-th-large"></i><span class="nav-text">Dashboard</span>
+            </div>
+            <div class="nav-icon" onclick="switchTab('builder')">
+                <i class="fas fa-project-diagram"></i><span class="nav-text">Node Builder</span>
+            </div>
+            <div class="nav-icon" onclick="switchTab('training')">
+                <i class="fas fa-play"></i><span class="nav-text">Live Training</span>
+            </div>
+            <div class="nav-icon" onclick="switchTab('datalab')">
+                <i class="fas fa-flask"></i><span class="nav-text">Data Lab</span>
+            </div>
+            <div style="flex: 1;"></div>
+            <div class="nav-icon" onclick="switchTab('settings')">
+                <i class="fas fa-cog"></i><span class="nav-text">Settings</span>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div class="main-view">
+            <div class="top-bar">
+                <div id="project-title" style="font-weight: 700; font-size: 1.1rem; color: var(--text-mid);">
+                    Project: <span style="color: var(--accent);">Untitled_AI</span>
+                </div>
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <div class="status-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 600;">
+                        LOCAL LLM READY
+                    </div>
+                    <button class="btn-pro">SAVE PROJECT</button>
+                </div>
             </div>
 
-            <div class="grid">
-                <div class="card">
-                    <h2><i class="fas fa-microchip"></i> Hardware Specs</h2>
-                    <div id="hw-details">
-                        <p>CPU Cores: --</p>
-                        <div class="progress-container"><div id="cpu-bar" class="progress-bar"></div></div>
-                        <p>RAM: --</p>
-                        <div class="progress-container"><div id="ram-bar" class="progress-bar"></div></div>
+            <div class="view-port">
+                <!-- Dashboard -->
+                <div id="tab-dashboard" class="tab-content">
+                    <h2 style="margin-top: 0;">System Overview</h2>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                        <div class="glass-card">
+                            <h4 style="margin: 0; color: var(--text-low); text-transform: uppercase; font-size: 0.75rem;">CPU USAGE</h4>
+                            <div id="cpu-stat" style="font-size: 2rem; font-weight: 700; margin: 10px 0;">-- %</div>
+                            <div style="height: 4px; background: #334155; border-radius: 2px;"><div id="cpu-fill" style="width: 0%; height: 100%; background: var(--accent); border-radius: 2px;"></div></div>
+                        </div>
+                        <div class="glass-card">
+                            <h4 style="margin: 0; color: var(--text-low); text-transform: uppercase; font-size: 0.75rem;">RAM AVAILABLE</h4>
+                            <div id="ram-stat" style="font-size: 2rem; font-weight: 700; margin: 10px 0;">-- GB</div>
+                            <div style="height: 4px; background: #334155; border-radius: 2px;"><div id="ram-fill" style="width: 0%; height: 100%; background: var(--success); border-radius: 2px;"></div></div>
+                        </div>
+                        <div class="glass-card">
+                            <h4 style="margin: 0; color: var(--text-low); text-transform: uppercase; font-size: 0.75rem;">GPU ACCELERATION</h4>
+                            <div id="gpu-stat" style="font-size: 1.2rem; font-weight: 700; margin: 10px 0;">DETECTING...</div>
+                        </div>
                     </div>
                 </div>
-                <div class="card">
-                    <h2><i class="fas fa-star"></i> AI Capability</h2>
-                    <p id="capability-text">Scanning system...</p>
-                    <p class="subtitle" style="font-size: 0.9rem;">Recommended: Fine-tune 7B Models via QLoRA</p>
+
+                <!-- Node Builder -->
+                <div id="tab-builder" class="tab-content hidden">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0;">Pro Node Architect</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-pro" onclick="addNode('Linear')">+ Linear</button>
+                            <button class="btn-pro" onclick="addNode('Transformer')">+ Transformer</button>
+                            <button class="btn-pro secondary" onclick="clearNodes()">Reset</button>
+                        </div>
+                    </div>
+                    <div class="glass-card" id="node-canvas" style="height: 550px; position: relative; overflow: hidden; background: #020617; background-image: radial-gradient(#1e293b 1px, transparent 1px); background-size: 20px 20px;">
+                        <svg id="node-lines" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></svg>
+                        <p id="node-placeholder" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-low);"><i class="fas fa-plus"></i> Add nodes and drag between ports</p>
+                    </div>
+                </div>
+
+                <!-- Other tabs simplified for brevity -->
+                <div id="tab-training" class="tab-content hidden">
+                    <h2>Live Training Console</h2>
+                    <div class="glass-card" style="height: 400px; background: #020617; font-family: monospace; color: var(--success);" id="train-log">
+                        > READY.
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Data Lab Page -->
-        <div id="data-lab" class="page">
-            <div class="header">
-                <h1>Data Lab</h1>
-                <p class="subtitle">Clean, optimize and augment your training data</p>
-            </div>
-            <div class="card">
-                <p>Universal Data Engine (UDE) v1.0</p>
-                <div style="border: 2px dashed #334155; padding: 40px; text-align: center; border-radius: 12px;">
-                    <i class="fas fa-file-upload" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                    <p>Drag files or folders here</p>
-                    <p class="subtitle">Supports: .txt, .pdf, .jpg, .obj, .litematica, .schematic</p>
-                </div>
-                <div style="margin-top: 20px; display: flex; gap: 10px;">
-                    <button class="btn" onclick="simulateDataAction('Cleaning')">Auto-Clean</button>
-                    <button class="btn btn-secondary" onclick="simulateDataAction('Optimizing')">Optimize for 3D</button>
-                    <button class="btn btn-secondary" onclick="simulateDataAction('Redacting PII')">Remove PII</button>
-                    <button class="btn btn-secondary" onclick="simulateDataAction('Auto-Cropping')">Auto-Crop</button>
-                </div>
-                <div id="data-log" style="margin-top: 20px; font-family: monospace; font-size: 0.8rem; color: #10b981;"></div>
-            </div>
-        </div>
-
-        <!-- Model Builder Page -->
-        <div id="builder" class="page">
-            <div class="header">
-                <h1>Visual Model Builder</h1>
-                <p class="subtitle">Lego-style architecture designer</p>
-            </div>
-            <div class="card">
-                <div class="model-builder-canvas" id="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <p id="canvas-placeholder"><i class="fas fa-plus"></i> Drag components to start building architecture</p>
-                </div>
-                <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-input">Input Block</div>
-                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-transformer">Transformer Layer</div>
-                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-dense">Dense Block</div>
-                    <div class="btn btn-secondary" draggable="true" ondragstart="drag(event)" id="block-output">Output Block</div>
-                    <div style="flex: 1;"></div>
-                    <button class="btn" onclick="validateArch()">Validate Arch</button>
-                    <button class="btn btn-secondary" onclick="clearCanvas()">Clear</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Training Page -->
-        <div id="training" class="page">
-            <div class="header">
-                <h1>Training Engine</h1>
-                <p class="subtitle">Fast, accurate, and resource-aware training</p>
-            </div>
-            <div class="grid">
-                <div class="card">
-                    <h2>Training Config</h2>
-                    <label>Training Mode</label>
-                    <select id="train-mode">
-                        <option>Auto-Pilot (Optimized)</option>
-                        <option>Manual (Advanced)</option>
-                        <option>Low-Spec (CPU Only)</option>
-                    </select>
-                    <label>Target Model</label>
-                    <input type="text" placeholder="e.g. Llama-3-8B-Instruct">
-                    <button class="btn" style="width: 100%;" onclick="startTraining()">Launch Training</button>
-                </div>
-                <div class="card">
-                    <h2>Live Monitor</h2>
-                    <p>Epoch: <span id="monitor-epoch">0</span></p>
-                    <p>Loss: <span id="monitor-loss">0.000</span></p>
-                    <div style="height: 100px; background: #020617; border-radius: 8px; display: flex; align-items: flex-end; padding: 10px; gap: 2px;" id="loss-graph"></div>
-                    <p class="subtitle" style="margin-top: 10px;">Throttling status: <span id="throttle-status" style="color: #22c55e;">Idle</span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Templates Page -->
-        <div id="templates" class="page">
-            <div class="header">
-                <h1>Template Gallery</h1>
-                <p class="subtitle">Quick-start with pre-configured models</p>
-            </div>
-            <div class="grid">
-                <div class="card" onclick="loadTemplate('llama')">
-                    <h2><i class="fas fa-comment"></i> Llama-3 Fine-tuner</h2>
-                    <p class="subtitle">Optimized for chat and instruction following.</p>
-                    <button class="btn" style="width: 100%; margin-top: 10px;">Select Template</button>
-                </div>
-                <div class="card" onclick="loadTemplate('sd')">
-                    <h2><i class="fas fa-image"></i> Stable Diffusion</h2>
-                    <p class="subtitle">Fine-tune image generation with LoRA.</p>
-                    <button class="btn" style="width: 100%; margin-top: 10px;">Select Template</button>
-                </div>
-                <div class="card" onclick="loadTemplate('minecraft')">
-                    <h2><i class="fas fa-cube"></i> Minecraft Architect</h2>
-                    <p class="subtitle">Train models to generate schematics.</p>
-                    <button class="btn" style="width: 100%; margin-top: 10px;">Select Template</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cloud Page -->
-        <div id="cloud" class="page">
-            <div class="header">
-                <h1>Cloud Integration</h1>
-                <p class="subtitle">Access H100s and A100s with one click</p>
-            </div>
-            <div class="card">
-                <p>Connected Cloud Provider: None</p>
-                <input type="text" placeholder="API Key / Token">
-                <button class="btn">Connect Provider</button>
+        <!-- AI Sidebar -->
+        <div class="ai-sidebar">
+            <h3 style="margin-top: 0;"><i class="fas fa-robot"></i> AI Copilot</h3>
+            <div id="ai-chat" style="flex: 1; overflow-y: auto;"></div>
+            <div style="position: relative; margin-top: 10px;">
+                <input id="ai-input" type="text" placeholder="Ask AI..." style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 12px; box-sizing: border-box;">
             </div>
         </div>
     </div>
 
-    <style>
-        .dropped-block {
-            background: var(--accent-color);
-            color: #0f172a;
-            padding: 10px;
-            border-radius: 6px;
-            margin: 5px;
-            cursor: move;
-            display: inline-block;
-            font-weight: bold;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
-
-    <script>
-        function allowDrop(ev) { ev.preventDefault(); }
-        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-        function drop(ev) {
-            ev.preventDefault();
-            const data = ev.dataTransfer.getData("text");
-            const original = document.getElementById(data);
-            const clone = document.createElement("div");
-            clone.className = "dropped-block";
-            clone.innerText = original.innerText;
-
-            document.getElementById("canvas-placeholder").style.display = "none";
-            document.getElementById("canvas").appendChild(clone);
-        }
-
-        function clearCanvas() {
-            const canvas = document.getElementById("canvas");
-            canvas.innerHTML = '<p id="canvas-placeholder"><i class="fas fa-plus"></i> Drag components to start building architecture</p>';
-        }
-
-        function validateArch() {
-            const blocks = document.querySelectorAll(".dropped-block");
-            if (blocks.length < 2) {
-                alert("Architecture too simple. Add more blocks.");
-            } else {
-                alert(`Architecture Validated: ${blocks.length} layers detected.`);
-            }
-        }
-
-        function navigate(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            document.getElementById(pageId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        async function updateHW() {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/hardware');
-                const data = await response.json();
-                document.getElementById('hw-details').innerHTML = `
-                    <p><i class="fas fa-microchip"></i> CPU: ${data.specs.cpu_count} Cores (${data.cpu_usage}%)</p>
-                    <div class="progress-container"><div style="width: ${data.cpu_usage}%" class="progress-bar"></div></div>
-                    <p><i class="fas fa-memory"></i> RAM: ${data.specs.ram_total_gb} GB</p>
-                    <div class="progress-container"><div style="width: 50%" class="progress-bar"></div></div>
-                    <p><i class="fas fa-video"></i> GPU: ${data.specs.gpus.length > 0 ? data.specs.gpus[0].name : 'None'}</p>
-                `;
-                document.getElementById('capability-text').innerText = data.capability;
-            } catch (e) {
-                console.log("Backend not ready");
-            }
-        }
-
-        function simulateDataAction(action) {
-            const log = document.getElementById('data-log');
-            log.innerText = `${action} in progress...`;
-            setTimeout(() => {
-                log.innerText = `Data ${action} successfully. Ready for training.`;
-            }, 2000);
-        }
-
-        function loadTemplate(name) {
-            alert(`Template ${name} loaded. Switching to Training.`);
-            navigate('training');
-        }
-
-        async function startTraining() {
-            const mode = document.getElementById('train-mode').value;
-            await fetch('http://127.0.0.1:8000/start-training', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mode: mode })
-            });
-            alert("Training Engine Initiated.");
-        }
-
-        async function updateMonitor() {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/training-status');
-                const data = await response.json();
-                document.getElementById('monitor-epoch').innerText = data.epoch;
-                document.getElementById('monitor-loss').innerText = data.loss;
-
-                if (data.is_training) {
-                    const bar = document.createElement("div");
-                    bar.style.width = "4px";
-                    bar.style.height = `${Math.min(100, data.loss * 20)}%`;
-                    bar.style.background = "var(--accent-color)";
-                    const graph = document.getElementById('loss-graph');
-                    graph.appendChild(bar);
-                    if (graph.children.length > 50) graph.removeChild(graph.firstChild);
-                    document.getElementById('throttle-status').innerText = "Active";
-                    document.getElementById('throttle-status').style.color = "#fbbf24";
-                } else {
-                    document.getElementById('throttle-status').innerText = "Idle";
-                    document.getElementById('throttle-status').style.color = "#22c55e";
-                }
-            } catch (e) {}
-        }
-
-        setInterval(updateHW, 3000);
-        setInterval(updateMonitor, 1000);
-        updateHW();
-    </script>
+    <script src="renderer.js"></script>
 </body>
 </html>
