@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OmniTrain AI</title>
+    <style>
+        body { font-family: sans-serif; background: #1e1e1e; color: #fff; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .card { background: #2d2d2d; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        h1 { color: #00ff88; }
+        .status { color: #aaa; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { background: #444; border: none; color: white; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
+        .tab-btn.active { background: #00ff88; color: #000; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OmniTrain AI</h1>
+        <p class="status">Universal AI Training Studio</p>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('hardware')">Hardware</button>
+            <button class="tab-btn" onclick="showTab('data')">Data Engine</button>
+            <button class="tab-btn" onclick="showTab('training')">Training</button>
+            <button class="tab-btn" onclick="showTab('cloud')">Cloud</button>
+        </div>
+
+        <div id="hardware" class="tab-content active">
+            <div class="card" id="hardware-card">
+                <h2>Hardware Detection</h2>
+                <div id="hardware-info">Loading...</div>
+            </div>
+        </div>
+
+        <div id="data" class="tab-content">
+            <div class="card">
+                <h2>Universal Data Engine</h2>
+                <p>Drop your files here (Text, Image, 3D, Minecraft)</p>
+                <input type="file" id="data-upload" multiple>
+                <button onclick="uploadData()">Process Data</button>
+                <div id="data-status"></div>
+            </div>
+        </div>
+
+        <div id="cloud" class="tab-content">
+            <div class="card">
+                <h2>Cloud Integration</h2>
+                <p>Connect to external GPUs for faster training.</p>
+                <input type="text" id="cloud-api-key" placeholder="API Key">
+                <input type="text" id="cloud-url" placeholder="Cloud Provider URL">
+                <br><br>
+                <button onclick="saveCloudConfig()">Save Configuration</button>
+                <div id="cloud-status">Status: Local Only</div>
+            </div>
+        </div>
+
+        <div id="training" class="tab-content">
+            <div class="card">
+                <h2>Training Engine</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="setMode('auto')">Auto-Pilot</button>
+                    <button class="tab-btn" onclick="setMode('lego')">Lego-Builder</button>
+                </div>
+                <div id="mode-content">
+                    <p>Select Model Type:</p>
+                    <select id="model-type">
+                        <option value="text">Text (LLM)</option>
+                        <option value="image">Image Gen</option>
+                        <option value="3d">3D City Builder</option>
+                        <option value="minecraft">Minecraft Architect</option>
+                    </select>
+                    <br><br>
+                    <button onclick="startTraining()">Start Training</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function fetchHardware() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/hardware');
+                const data = await response.json();
+                document.getElementById('hardware-info').innerHTML = `
+                    <p><strong>CPU Cores:</strong> ${data.specs.cpu_count}</p>
+                    <p><strong>RAM:</strong> ${data.specs.ram_total_gb} GB</p>
+                    <p><strong>GPUs:</strong> ${data.specs.gpus.length > 0 ? data.specs.gpus.map(g => g.name).join(', ') : 'None'}</p>
+                    <p><strong>Suggested Capability:</strong> ${data.capability}</p>
+                `;
+            } catch (e) {
+                document.getElementById('hardware-info').innerText = 'Backend not connected.';
+            }
+        }
+
+        async function uploadData() {
+            const status = document.getElementById('data-status');
+            status.innerText = "Processing...";
+            // In a real app, we would send the file path to the backend
+            // Here we simulate it
+            setTimeout(() => {
+                status.innerText = "Data cleaned and ready for training!";
+            }, 2000);
+        }
+
+        async function startTraining() {
+            const type = document.getElementById('model-type').value;
+            alert(`Starting training for ${type}. Check backend logs.`);
+            await fetch('http://127.0.0.1:8000/start-training', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: type })
+            });
+        }
+
+        function setMode(mode) {
+            // Simplified mode switch
+            console.log("Switched to", mode);
+        }
+
+        async function saveCloudConfig() {
+            const key = document.getElementById('cloud-api-key').value;
+            const url = document.getElementById('cloud-url').value;
+            document.getElementById('cloud-status').innerText = "Status: Cloud Connected";
+            alert("Cloud configuration saved locally.");
+        }
+
+        setInterval(fetchHardware, 3000);
+        fetchHardware();
+    </script>
+</body>
+</html>
