@@ -1,7 +1,6 @@
 import psutil
 import GPUtil
 import platform
-import speedtest
 import os
 
 class HardwareDetector:
@@ -37,23 +36,13 @@ class HardwareDetector:
         ram = specs["ram_total_gb"]
 
         if vram >= 24000:
-            return "Advanced (LLMs up to 30B+, Large Generative Models)"
+            return {"tier": "Advanced", "max_model_size": "30B+", "description": "Large Generative Models"}
         elif vram >= 8000:
-            return "Mid-Range (LLMs up to 7B-13B with 4-bit, Stable Diffusion)"
+            return {"tier": "Mid-Range", "max_model_size": "7B-13B", "description": "4-bit Optimizations Active"}
         elif ram >= 16:
-            return "Entry-Level / CPU-Optimized (Small Models, Fine-tuning 3B-7B)"
+            return {"tier": "Entry-Level", "max_model_size": "3B-7B", "description": "CPU-Optimized Fine-tuning"}
         else:
-            return "Low-Spec (Extremely small models, basic fine-tuning)"
-
-    @staticmethod
-    def get_internet_speed():
-        try:
-            st = speedtest.Speedtest()
-            st.get_best_server()
-            download_speed = st.download() / 1_000_000 # Mbps
-            return round(download_speed, 2)
-        except:
-            return "Unknown"
+            return {"tier": "Low-Spec", "max_model_size": "Small Models", "description": "Basic fine-tuning and inference"}
 
 if __name__ == "__main__":
     detector = HardwareDetector()
