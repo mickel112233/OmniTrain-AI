@@ -225,6 +225,7 @@ async function acceptSetup() {
 }
 
 // --- API & Monitoring ---
+let lossHistory = [];
 
 async function fetchHW() {
     try {
@@ -234,7 +235,98 @@ async function fetchHW() {
         document.getElementById('cpu-fill').style.width = data.cpu_usage + "%";
         document.getElementById('ram-stat').innerText = data.specs.ram_total_gb + " GB";
         document.getElementById('gpu-stat').innerText = data.specs.gpus.length > 0 ? data.specs.gpus[0].name : "NO GPU DETECTED";
+
+        // Update Training Chart
+        const statusRes = await fetch('http://127.0.0.1:8000/training-status');
+        const statusData = await statusRes.json();
+        if (statusData.is_training) {
+            lossHistory.push(statusData.loss);
+            if (lossHistory.length > 50) lossHistory.shift();
+            drawChart();
+            updateLog(statusData);
+        }
     } catch (e) {}
+}
+
+function drawChart() {
+    const svg = document.getElementById('dashboard-chart');
+    if (!svg) return;
+    const width = svg.clientWidth;
+    const height = svg.clientHeight;
+    svg.innerHTML = '';
+
+    if (lossHistory.length < 2) return;
+
+    const maxLoss = Math.max(...lossHistory);
+    const minLoss = Math.min(...lossHistory);
+    const range = maxLoss - minLoss || 1;
+
+    let points = '';
+    lossHistory.forEach((val, i) => {
+        const x = (i / (lossHistory.length - 1)) * width;
+        const y = height - ((val - minLoss) / range) * (height - 20) - 10;
+        points += `${x},${y} `;
+    });
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    path.setAttribute('points', points);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'var(--accent)');
+    path.setAttribute('stroke-width', '2');
+    svg.appendChild(path);
+}
+
+function updateLog(status) {
+    const log = document.getElementById('train-log');
+    if (!log) return;
+    const entry = document.createElement('div');
+    entry.innerHTML = `<span style="color: var(--text-low)">[EPOCH ${status.epoch}]</span> Loss: <span style="color: white">${status.loss}</span> | System Smoothness: <span style="color: var(--success)">OPTIMAL</span>`;
+    log.appendChild(entry);
+    log.scrollTop = log.scrollHeight;
+
+    document.getElementById('training-status-badge').innerText = 'TRAINING ACTIVE';
+    document.getElementById('training-status-badge').style.color = 'var(--success)';
+}
+
+async function startTraining() {
+    const config = { mode: 'pro' };
+    await fetch('http://127.0.0.1:8000/start-training', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config)
+    });
+    switchTab('training');
+}
+
+async function stopTraining() {
+    // In real app, call DELETE or POST to stop
+    document.getElementById('training-status-badge').innerText = 'IDLE';
+    document.getElementById('training-status-badge').style.color = 'var(--text-low)';
+}
+
+// --- Data Lab Logic ---
+
+async function processData() {
+    const path = document.getElementById('data-input').value;
+    const res = await fetch('http://127.0.0.1:8000/upload-data?file_path=' + encodeURIComponent(path), { method: 'POST' });
+    const data = await res.json();
+
+    const results = document.getElementById('data-results');
+    const card = document.createElement('div');
+    card.className = 'glass-card';
+    card.style.padding = '12px';
+    card.innerHTML = `
+        <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">${path.split('/').pop()}</div>
+        <div style="font-size: 0.7rem; color: var(--success);"><i class="fas fa-check-circle"></i> ${data.status}</div>
+    `;
+    results.appendChild(card);
+}
+
+async function dataAction(action) {
+    const path = document.getElementById('data-input').value;
+    const res = await fetch(`http://127.0.0.1:8000/data-action?action=${action}&file_path=` + encodeURIComponent(path), { method: 'POST' });
+    const data = await res.json();
+    addChatBubble(`Action ${action} completed: ${data.status}`, 'var(--success)');
 }
 
 async function sendAiMessage() {

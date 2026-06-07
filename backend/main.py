@@ -9,6 +9,7 @@ from .data_engine import DataEngine
 from .training_engine import TrainingEngine
 from .local_ai import LocalAIAssistant
 from .setup_checker import check_dependencies, get_system_readiness
+from .template_manager import TemplateManager
 
 app = FastAPI()
 
@@ -95,3 +96,12 @@ app.mount("/static", StaticFiles(directory=static_path), name="static")
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+@app.get("/template/{name}")
+def get_template(name: str):
+    return TemplateManager.get_template(name)
+
+@app.get("/auto-pilot")
+def get_auto_pilot():
+    specs = detector.get_specs()
+    return TemplateManager.auto_pilot_config(specs)

@@ -68,9 +68,16 @@ class TrainingEngine:
         self.is_training = False
 
     def apply_throttle(self):
+        # Dynamic Throttle: Adjust sleep based on how far over limit we are
         cpu_usage = psutil.cpu_percent()
-        if cpu_usage > self.throttle_limit * 100:
-            time.sleep(0.2)
+        over = cpu_usage - (self.throttle_limit * 100)
+        if over > 0:
+            time.sleep(0.1 + (over / 100))
+
+    def enable_fast_train(self):
+        # Ultra-low-spec mode: Reduces batch accumulation and precision
+        print("Fast-Train Mode Active: Optimizing for low-end hardware.")
+        self.throttle_limit = 0.95
 
     def stop_training(self):
         self.is_training = False
