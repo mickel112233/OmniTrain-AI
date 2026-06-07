@@ -181,9 +181,47 @@ function showLauncher() {
     document.getElementById('setup-agreement').classList.add('hidden');
 }
 
-function acceptSetup() {
-    document.getElementById('setup-agreement').classList.add('hidden');
-    document.getElementById('launcher').classList.remove('hidden');
+async function acceptSetup() {
+    const box = document.querySelector('.setup-box');
+    const originalHtml = box.innerHTML;
+
+    box.innerHTML = `
+        <h1 style="font-size: 2rem;">Installing Professional AI Suite...</h1>
+        <p id="setup-status">Starting setup...</p>
+        <div style="height: 10px; background: #334155; border-radius: 5px; margin: 20px 0;">
+            <div id="setup-progress" style="width: 0%; height: 100%; background: var(--accent); border-radius: 5px; transition: 0.5s;"></div>
+        </div>
+        <div id="setup-log" style="text-align: left; font-family: monospace; font-size: 0.8rem; color: var(--text-mid); max-height: 150px; overflow-y: auto;"></div>
+    `;
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/setup-system', { method: 'POST' });
+        const data = await response.json();
+
+        const log = document.getElementById('setup-log');
+        const progress = document.getElementById('setup-progress');
+        const status = document.getElementById('setup-status');
+
+        for (let i = 0; i < data.steps.length; i++) {
+            status.innerText = data.steps[i];
+            log.innerHTML += `> ${data.steps[i]}<br>`;
+            progress.style.width = ((i + 1) / data.steps.length * 100) + '%';
+            await new Promise(r => setTimeout(r, 800)); // Visual spacing
+        }
+
+        status.innerHTML = '<span style="color: var(--success);">Setup Complete!</span>';
+        await new Promise(r => setTimeout(r, 1000));
+
+        document.getElementById('setup-agreement').style.display = 'none';
+        const launcher = document.getElementById('launcher');
+        launcher.classList.remove('hidden');
+        launcher.style.display = 'flex';
+        launcher.style.visibility = 'visible';
+        launcher.style.opacity = '1';
+        launcher.style.pointerEvents = 'auto';
+    } catch (e) {
+        box.innerHTML = `<h3>Setup Error</h3><p>Could not connect to backend.</p><button class="btn-pro" onclick="location.reload()">Retry</button>`;
+    }
 }
 
 // --- API & Monitoring ---

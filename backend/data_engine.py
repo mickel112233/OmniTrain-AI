@@ -1,9 +1,14 @@
 import os
 import json
 import re
+try:
+    from .local_ai import LocalAIAssistant
+except ImportError:
+    from local_ai import LocalAIAssistant
 
 class DataEngine:
-    def __init__(self):
+    def __init__(self, ai_assistant=None):
+        self.ai = ai_assistant or LocalAIAssistant()
         self.supported_formats = [
             ".txt", ".pdf", ".jpg", ".png", ".wav", ".mp3",
             ".obj", ".fbx", ".litematica", ".schematic", ".json", ".csv"
@@ -24,14 +29,18 @@ class DataEngine:
             return {"status": "Processing generic data", "ext": ext}
 
     def clean_text_data(self, file_path):
-        # Streaming approach to cleaning text
+        # Streaming approach with AI-assisted cleaning
         cleaned_length = 0
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
             for line in f:
-                cleaned_line = re.sub(r'\s+', ' ', line).strip()
+                # Use AI for complex cleaning/PII redaction if needed
+                if len(line) > 10:
+                    cleaned_line = self.ai.generate_response(line, context="data_clean")
+                else:
+                    cleaned_line = re.sub(r'\s+', ' ', line).strip()
                 cleaned_length += len(cleaned_line)
 
-        return {"status": "Cleaned (Streaming)", "length": cleaned_length}
+        return {"status": "AI-Enhanced Cleaning Complete", "length": cleaned_length}
 
     def clean_image_data(self, file_path):
         # Logic for image preprocessing (e.g., resizing)

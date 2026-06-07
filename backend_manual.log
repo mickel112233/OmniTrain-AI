@@ -1,0 +1,18 @@
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [261982]
+INFO:     Started server process [267333]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+Setting up local AI model (Phi-3-mini)...
+Setting up local AI model (Phi-3-mini)...
+INFO:     127.0.0.1:39896 - "POST /setup-system HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56970 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56970 - "GET / HTTP/1.1" 200 OK
+Setting up local AI model (Phi-3-mini)...
+INFO:     127.0.0.1:56970 - "POST /setup-system HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56970 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56970 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56970 - "GET /hardware HTTP/1.1" 200 OK

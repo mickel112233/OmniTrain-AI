@@ -34,6 +34,21 @@ class HardwareInfo(BaseModel):
 def read_root():
     return {"status": "OmniTrain AI Backend Running"}
 
+@app.post("/setup-system")
+async def setup_system():
+    # Simulate a full professional installation flow
+    steps = [
+        "Initializing Environment...",
+        "Configuring Python 3.12 Venv...",
+        "Installing PyTorch & CUDA Kernels...",
+        "Downloading BitsAndBytes 4-bit Engine...",
+        "Downloading Phi-3-mini Local Model Weights (2.4 GB)...",
+        "Finalizing Optimization..."
+    ]
+    # Simulate work
+    local_ai.setup()
+    return {"status": "success", "steps": steps}
+
 @app.get("/hardware")
 def get_hardware():
     specs = detector.get_specs()

@@ -170,7 +170,7 @@ body, html {
 .btn-pro:hover { filter: brightness(1.1); transform: scale(1.02); }
 .btn-pro.secondary { background: var(--bg-card); color: white; }
 
-.hidden { display: none !important; }
+.hidden { visibility: hidden; opacity: 0; pointer-events: none; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }

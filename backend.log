@@ -123,3 +123,56 @@ INFO:     127.0.0.1:45010 - "GET /hardware HTTP/1.1" 200 OK
 INFO:     127.0.0.1:46906 - "GET /hardware HTTP/1.1" 200 OK
 INFO:     127.0.0.1:46906 - "GET /hardware HTTP/1.1" 200 OK
 INFO:     127.0.0.1:46906 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "POST /setup-system HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60632 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45734 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45734 - "POST /setup-system HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:45734 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45734 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45734 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45734 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45734 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37018 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37018 - "POST /setup-system HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:37018 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37018 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37018 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37018 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37018 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36892 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36892 - "POST /setup-system HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:36892 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36892 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36892 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36892 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36892 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37334 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37334 - "POST /setup-system HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:37334 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37334 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37334 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37334 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37334 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "POST /setup-system HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:47974 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47974 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [156492]
