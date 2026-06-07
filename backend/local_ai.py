@@ -4,12 +4,15 @@ import os
 
 class LocalAIAssistant:
     def __init__(self, model_path=None):
-        self.model_path = model_path
+        self.model_path = model_path or os.path.join(os.path.expanduser("~"), ".omnitrain", "models")
         self.is_ready = False
         self.provider = "llama.cpp" # or "ollama"
 
     def setup(self):
-        print("Setting up local AI model (Phi-3-mini)...")
+        print(f"Setting up local AI model in {self.model_path}...")
+        if not os.path.exists(self.model_path):
+            os.makedirs(self.model_path, exist_ok=True)
+
         # In a real app, this would download the GGUF file and setup the runner
         self.is_ready = True
         return True

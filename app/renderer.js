@@ -212,13 +212,9 @@ async function acceptSetup() {
         status.innerHTML = '<span style="color: var(--success);">Setup Complete!</span>';
         await new Promise(r => setTimeout(r, 1000));
 
-        document.getElementById('setup-agreement').style.display = 'none';
+        document.getElementById('setup-agreement').classList.add('hidden');
         const launcher = document.getElementById('launcher');
         launcher.classList.remove('hidden');
-        launcher.style.display = 'flex';
-        launcher.style.visibility = 'visible';
-        launcher.style.opacity = '1';
-        launcher.style.pointerEvents = 'auto';
     } catch (e) {
         box.innerHTML = `<h3>Setup Error</h3><p>Could not connect to backend.</p><button class="btn-pro" onclick="location.reload()">Retry</button>`;
     }

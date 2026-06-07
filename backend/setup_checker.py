@@ -5,10 +5,12 @@ import psutil
 def check_dependencies():
     deps = {
         "torch": "PyTorch (Core ML Engine)",
+        "transformers": "HuggingFace Transformers",
+        "accelerate": "HuggingFace Accelerate",
+        "numpy": "NumPy (Math Operations)",
         "fastapi": "FastAPI (Backend API)",
         "psutil": "PSUtil (Hardware Detection)",
-        "uvicorn": "Uvicorn (Server)",
-        "playwright": "Playwright (Testing)"
+        "uvicorn": "Uvicorn (Server)"
     }
 
     results = []
