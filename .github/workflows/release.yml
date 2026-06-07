@@ -33,3 +33,4 @@ jobs:
           release: true
           # Options for Windows, Linux, and macOS
           args: --win --linux --mac
+          max_attempts: 3

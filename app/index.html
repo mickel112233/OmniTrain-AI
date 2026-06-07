@@ -95,6 +95,7 @@
                 <i class="fas fa-flask"></i><span class="nav-text">Data Lab</span>
             </div>
             <div style="flex: 1;"></div>
+            <div class="version-badge">v1.0.0-PRO</div>
             <div class="nav-icon" onclick="switchTab('settings')">
                 <i class="fas fa-cog"></i><span class="nav-text">Settings</span>
             </div>
@@ -181,6 +182,23 @@
                             </div>
                             <button id="start-btn" class="btn-pro" style="width: 100%; margin-bottom: 12px;" onclick="startTraining()">START TRAINING</button>
                             <button id="stop-btn" class="btn-pro secondary" style="width: 100%;" onclick="stopTraining()">EMERGENCY STOP</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-settings" class="tab-content hidden">
+                    <h2>Settings & License</h2>
+                    <div class="glass-card" style="margin-bottom: 24px;">
+                        <h3>Software Updates</h3>
+                        <p style="color: var(--text-mid);">Currently running OmniTrain Pro v1.0.0</p>
+                        <button class="btn-pro" onclick="alert('Checking for updates...')">CHECK FOR UPDATES</button>
+                    </div>
+                    <div class="glass-card">
+                        <h3>License Management</h3>
+                        <p style="color: var(--text-mid);">Manage your commercial license and activation.</p>
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <input type="password" placeholder="Enter License Key..." style="flex: 1; background: var(--bg-deep); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px;">
+                            <button class="btn-pro secondary" onclick="alert('Validating license...')">ACTIVATE</button>
                         </div>
                     </div>
                 </div>

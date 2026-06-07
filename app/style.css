@@ -73,6 +73,18 @@ body, html {
 .nav-text { display: none; font-size: 0.95rem; font-weight: 500; }
 .sidebar:hover .nav-text { display: block; }
 
+.version-badge {
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: var(--accent-glow);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: block;
+}
+.sidebar:not(:hover) .version-badge { display: none; }
+
 /* Content Area */
 .main-view {
     flex: 1;
