@@ -21,7 +21,7 @@ class TestOmniTrainBackend(unittest.TestCase):
             f.write("Hello   World\nLine  2\nEmail: test@example.com")
 
         result = engine.process_file("test_dummy.txt")
-        self.assertEqual(result["status"], "Text Cleaning Complete")
+        self.assertEqual(result["status"], "Success: Data Cleaned & Added to Pool")
         self.assertTrue(os.path.exists("test_dummy.txt.cleaned"))
 
         redact_res = engine.remove_pii("test_dummy.txt")

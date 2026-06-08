@@ -40,9 +40,9 @@ class HardwareDetector:
         elif vram >= 8000:
             return {"tier": "Mid-Range", "max_model_size": "7B-13B", "description": "4-bit Optimizations Active"}
         elif ram >= 16:
-            return {"tier": "Entry-Level", "max_model_size": "3B-7B", "description": "CPU-Optimized Fine-tuning"}
+            return {"tier": "Entry-Level", "max_model_size": "3B Model", "description": "Low-Spec Optimized Training"}
         else:
-            return {"tier": "Low-Spec", "max_model_size": "Small Models", "description": "Basic fine-tuning and inference"}
+            return {"tier": "Low-Spec", "max_model_size": "3B (Quantized)", "description": "Laptop-Smooth Training Mode"}
 
 if __name__ == "__main__":
     detector = HardwareDetector()

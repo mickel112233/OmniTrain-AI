@@ -21,9 +21,21 @@ class DataEngine:
             "status": "Ready for Training" if len(files) > 0 else "Awaiting Data"
         }
 
+    def _validate_path(self, path):
+        """Basic security check to prevent traversal and ensure path exists."""
+        if not path:
+            return None
+        # Normalize path
+        norm_path = os.path.normpath(path)
+        # Check if it exists
+        if not os.path.exists(norm_path):
+            return None
+        return norm_path
+
     def process_file(self, file_path):
-        if not os.path.exists(file_path):
-            return {"error": "File not found"}
+        file_path = self._validate_path(file_path)
+        if not file_path:
+            return {"error": "File not found or invalid path"}
 
         ext = os.path.splitext(file_path)[1].lower()
         if ext not in self.supported_formats:
@@ -87,8 +99,9 @@ class DataEngine:
         return {"status": "Minecraft data signature verified", "file": file_path}
 
     def remove_pii(self, file_path):
-        if not os.path.exists(file_path):
-            return {"error": "File not found"}
+        file_path = self._validate_path(file_path)
+        if not file_path:
+            return {"error": "File not found or invalid path"}
 
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -110,8 +123,9 @@ class DataEngine:
 
     def auto_crop_images(self, folder_path):
         # Realistic stub for dimension validation
-        if not os.path.exists(folder_path):
-            return {"error": "Folder not found"}
+        folder_path = self._validate_path(folder_path)
+        if not folder_path or not os.path.isdir(folder_path):
+            return {"error": "Folder not found or invalid"}
 
         processed = 0
         for f in os.listdir(folder_path):

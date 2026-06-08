@@ -6,19 +6,21 @@ import psutil
 import os
 import asyncio
 try:
-    from .hardware_detector import HardwareDetector
-    from .data_engine import DataEngine
-    from .training_engine import TrainingEngine
-    from .local_ai import LocalAIAssistant
-    from .setup_checker import check_dependencies, get_system_readiness
-    from .template_manager import TemplateManager
-except ImportError:
+    # Attempt direct import first (for standalone script execution)
     from hardware_detector import HardwareDetector
     from data_engine import DataEngine
     from training_engine import TrainingEngine
     from local_ai import LocalAIAssistant
     from setup_checker import check_dependencies, get_system_readiness
     from template_manager import TemplateManager
+except ImportError:
+    # Fallback to absolute package import (for module execution)
+    from backend.hardware_detector import HardwareDetector
+    from backend.data_engine import DataEngine
+    from backend.training_engine import TrainingEngine
+    from backend.local_ai import LocalAIAssistant
+    from backend.setup_checker import check_dependencies, get_system_readiness
+    from backend.template_manager import TemplateManager
 
 app = FastAPI()
 
@@ -115,6 +117,14 @@ async def stop_training():
 async def test_model(input_data: dict):
     # Expects {"data": [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}
     return training_engine.test_inference(input_data.get("data", []))
+
+@app.post("/activate-license")
+async def activate_license(license_data: dict):
+    key = license_data.get("key")
+    # Simulate secure validation
+    if key == "PRO-TR4IN-2024":
+        return {"status": "success", "tier": "ENTERPRISE", "features": ["Cloud Sync", "Multi-GPU", "Unlimited Pool"]}
+    return {"status": "failed", "error": "Invalid License Key"}
 
 @app.get("/training-status")
 def get_training_status():

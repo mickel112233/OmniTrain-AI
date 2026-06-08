@@ -295,7 +295,13 @@ function updateLog(status) {
 async function startTraining() {
     const type = document.getElementById('model-type').value;
     const throttle = document.getElementById('throttle-slider').value / 100;
-    const config = { type, throttle_limit: throttle };
+
+    // Send nodes and connections if in builder mode
+    const config = {
+        type,
+        throttle_limit: throttle,
+        nodes: nodes.length > 0 ? { nodes, connections } : null
+    };
 
     await fetch('http://127.0.0.1:8000/start-training', {
         method: 'POST',
@@ -394,14 +400,24 @@ function addChatBubble(text, color) {
 document.getElementById('ai-input').onkeypress = (e) => { if(e.key === 'Enter') sendAiMessage(); };
 
 // Settings Tab logic
-document.getElementById('save-settings').addEventListener('click', () => {
+document.getElementById('save-settings').addEventListener('click', async () => {
     const licenseKey = document.getElementById('license-key').value;
-    if (licenseKey === "PRO-TR4IN-2024") {
-        showNotification(`PRO License Activated!`);
-        document.querySelector('.version-badge').textContent = 'v1.0.0-ENTERPRISE';
-        document.querySelector('.version-badge').style.background = 'var(--accent)';
-    } else {
-        showNotification(`Settings saved. ${licenseKey ? 'Invalid key - ' : ''}Running in Community Mode.`);
+    try {
+        const res = await fetch('http://127.0.0.1:8000/activate-license', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: licenseKey })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showNotification(`${data.tier} License Activated!`);
+            document.querySelector('.version-badge').textContent = `v1.0.0-${data.tier}`;
+            document.querySelector('.version-badge').style.background = 'var(--accent)';
+        } else {
+            showNotification(`License error: ${data.error || 'Invalid key'}`);
+        }
+    } catch (e) {
+        showNotification(`Connection error to activation server.`);
     }
 });
 
