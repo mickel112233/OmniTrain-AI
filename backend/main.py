@@ -1,158 +1,89 @@
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-import psutil
+from sqlalchemy.orm import Session
+from typing import List, Optional
+import uvicorn
 import os
-import asyncio
-try:
-    # Attempt direct import first (for standalone script execution)
-    from hardware_detector import HardwareDetector
-    from data_engine import DataEngine
-    from training_engine import TrainingEngine
-    from local_ai import LocalAIAssistant
-    from setup_checker import check_dependencies, get_system_readiness
-    from template_manager import TemplateManager
-except ImportError:
-    # Fallback to absolute package import (for module execution)
-    from backend.hardware_detector import HardwareDetector
-    from backend.data_engine import DataEngine
-    from backend.training_engine import TrainingEngine
-    from backend.local_ai import LocalAIAssistant
-    from backend.setup_checker import check_dependencies, get_system_readiness
-    from backend.template_manager import TemplateManager
 
-app = FastAPI()
+from database.models import get_db, Project, TrainingSession, Settings
+from training_engine import TrainingEngine
+from data_engine import DataEngine
+from hardware_detector import HardwareDetector
+
+app = FastAPI(title="OmniTrain AI Pro Backend")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-detector = HardwareDetector()
-data_engine = DataEngine()
+# Global Engines
 training_engine = TrainingEngine()
-local_ai = LocalAIAssistant()
+data_engine = DataEngine()
+detector = HardwareDetector()
 
-@app.get("/")
-def read_root():
-    return {"status": "OmniTrain AI Backend Running"}
+class ProjectCreate(BaseModel):
+    name: str
+    description: Optional[str] = ""
+    model_type: str
+    nodes: List[dict]
 
-@app.get("/setup-status")
-def setup_status():
-    deps = check_dependencies()
-    system = get_system_readiness()
-    return {
-        "dependencies": deps,
-        "system": system,
-        "ready": all(d["status"] == "INSTALLED" for d in deps) and system["is_capable"]
-    }
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "version": "1.0.0-PRO"}
 
-@app.post("/setup-system")
-async def setup_system():
-    steps = []
-    steps.append("Verifying System Readiness...")
-    await asyncio.sleep(0.5)
+# --- Project Management ---
+@app.post("/projects")
+def create_project(proj: ProjectCreate, db: Session = Depends(get_db)):
+    db_proj = Project(**proj.model_dump())
+    db.add(db_proj)
+    db.commit()
+    db.refresh(db_proj)
+    return db_proj
 
-    # Check dependencies
-    deps = check_dependencies()
-    missing = [d["package"] for d in deps if d["status"] == "MISSING"]
+@app.get("/projects")
+def list_projects(db: Session = Depends(get_db)):
+    return db.query(Project).all()
 
-    if missing:
-        steps.append(f"Installing missing components: {', '.join(missing)}...")
-        # Simulation of pip install
-        await asyncio.sleep(1.5)
-        steps.append("Dependencies updated successfully.")
-    else:
-        steps.append("All core dependencies found.")
+# --- Hardware & System ---
+@app.get("/system/specs")
+def get_specs():
+    return detector.get_specs()
 
-    steps.append("Checking PyTorch Kernels...")
-    await asyncio.sleep(0.5)
+@app.get("/system/load")
+def get_load():
+    return detector.get_specs() # In this simple impl, load is part of specs
 
-    steps.append("Validating Local AI Weights (Phi-3-mini)...")
-    local_ai.setup()
-    await asyncio.sleep(0.5)
+# --- Training Operations ---
+@app.post("/training/start/{project_id}")
+async def start_training(project_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    # Fallback for dynamic training if project doesn't exist
+    project = db.query(Project).filter(Project.id == project_id).first()
+    config = {"nodes": project.nodes if project else {"nodes": []}}
 
-    steps.append("All components verified and ready.")
-    return {"status": "success", "steps": steps}
+    background_tasks.add_task(training_engine.start_training, config)
+    return {"status": "Training initiated"}
 
-@app.get("/hardware")
-def get_hardware():
-    specs = detector.get_specs()
-    capability = detector.suggest_capability(specs)
-    pool_stats = data_engine.get_pool_stats()
-    return {
-        "specs": specs,
-        "capability": capability,
-        "cpu_usage": psutil.cpu_percent(),
-        "data_pool": pool_stats
-    }
+@app.post("/training/stop")
+def stop_training():
+    training_engine.stop_training()
+    return {"status": "Stop signal sent"}
 
-@app.post("/upload-data")
-async def upload_data(file_path: str):
+@app.get("/training/status")
+def get_training_status():
+    return training_engine.get_status()
+
+# --- Data Management ---
+@app.post("/data/pool")
+def add_to_pool(file_path: str):
     return data_engine.process_file(file_path)
 
-@app.post("/data-action")
-async def data_action(action: str, file_path: str):
-    if action == "remove_pii":
-        return data_engine.remove_pii(file_path)
-    return {"error": "Action not found"}
-
-@app.post("/start-training")
-async def start_training(config: dict, background_tasks: BackgroundTasks):
-    # Unwrap config if nested
-    actual_config = config.get("config", config)
-    background_tasks.add_task(training_engine.start_training, actual_config)
-    return {"status": "Training started", "config": actual_config}
-
-@app.post("/stop-training")
-async def stop_training():
-    training_engine.stop_training()
-    return {"status": "Training stopped"}
-
-@app.post("/test-model")
-async def test_model(input_data: dict):
-    # Expects {"data": [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}
-    return training_engine.test_inference(input_data.get("data", []))
-
-@app.post("/activate-license")
-async def activate_license(license_data: dict):
-    key = license_data.get("key")
-    # Simulate secure validation
-    if key == "PRO-TR4IN-2024":
-        return {"status": "success", "tier": "ENTERPRISE", "features": ["Cloud Sync", "Multi-GPU", "Unlimited Pool"]}
-    return {"status": "failed", "error": "Invalid License Key"}
-
-@app.get("/training-status")
-def get_training_status():
-    status = {
-        "is_training": training_engine.is_training,
-        "epoch": training_engine.current_epoch,
-        "loss": round(training_engine.current_loss, 4)
-    }
-    return status
-
-@app.post("/ai-chat")
-async def ai_chat(message: dict):
-    response = local_ai.generate_response(message.get("prompt", ""))
-    return {"response": response}
-
-static_path = os.path.abspath("app")
-app.mount("/static", StaticFiles(directory=static_path), name="static")
-
-@app.get("/template/{name}")
-def get_template(name: str):
-    return TemplateManager.get_template(name)
-
-@app.get("/auto-pilot")
-def get_auto_pilot():
-    specs = detector.get_specs()
-    return TemplateManager.auto_pilot_config(specs)
+@app.get("/data/pool")
+def list_pool():
+    return data_engine.get_pool_stats()
 
 if __name__ == "__main__":
-    import uvicorn
-    # Bind to 127.0.0.1 for local security
     uvicorn.run(app, host="127.0.0.1", port=8000)

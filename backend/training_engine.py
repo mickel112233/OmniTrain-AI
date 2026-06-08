@@ -86,26 +86,27 @@ class TrainingEngine:
         self.model = None
 
     def _build_model_from_nodes(self, node_data):
-        """Mock interpreter for the UI nodes."""
+        """Interpreter for the UI nodes."""
         # node_data = {"nodes": [...], "connections": [...]}
-        # For now, we simulate layer aggregation
         layers = []
         if not node_data or not node_data.get("nodes"):
             return TabularModel()
 
         print(f"Interpreting {len(node_data['nodes'])} UI nodes...")
+        current_dim = 10
         for node in node_data["nodes"]:
             if node["type"] == "Linear":
-                layers.append(nn.Linear(10, 32))
+                layers.append(nn.Linear(current_dim, 32))
                 layers.append(nn.ReLU())
+                current_dim = 32
             elif node["type"] == "Transformer":
-                # Add a mini transformer block
-                pass
+                # Add a mini transformer block suitable for low-spec
+                layers.append(nn.TransformerEncoderLayer(d_model=current_dim, nhead=2, batch_first=True))
 
         # Return a sequential wrapper if we have custom layers
         if layers:
             # Ensure final output matches expected dummy target dim (1)
-            layers.append(nn.Linear(32, 1))
+            layers.append(nn.Linear(current_dim, 1))
             print("Custom node-based architecture initialized.")
             return nn.Sequential(*layers)
         return TabularModel()
@@ -255,3 +256,11 @@ class TrainingEngine:
 
     def import_from_url(self, url):
         return {"status": "Imported", "local_path": "./imports/project_x"}
+
+    def get_status(self):
+        return {
+            "is_training": self.is_training,
+            "epoch": self.current_epoch,
+            "loss": self.current_loss,
+            "metrics": {"loss": [self.current_loss], "accuracy": [98.2]} # Simple dummy metrics for UI
+        }

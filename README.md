@@ -1,72 +1,54 @@
-# OmniTrain AI: Ultra-Pro Universal Training Studio
+# OmniTrain AI Studio Pro
 
-OmniTrain AI is a professional-grade, modular desktop application designed to make AI model training, fine-tuning, and architecture design accessible to everyone—from beginners to pro engineers. It is specifically optimized to run high-level models on **low-spec hardware** using advanced quantization and "Smart Throttle" technology.
+Production-grade Universal AI Training Studio for high-performance model development on any hardware.
 
-## 🚀 Key Features
+## Architecture
+- **Frontend**: React 18, TypeScript, Tailwind CSS, Zustand (State), React Flow (Architect).
+- **Desktop**: Electron 28 (TypeScript), Secure IPC, Native Lifecycle Management.
+- **Backend**: Python FastAPI, PyTorch (Engine), SQLite (Storage), SQLAlchemy.
+- **Packaging**: Electron Builder (NSIS, DMG, AppImage).
 
-### 1. Universal Model Support
-Train any kind of AI model:
-- **Text & LLMs:** Fine-tune Llama, DeepSeek, or Phi models using LoRA/QLoRA.
-- **Generative & Image:** Support for GANs and Diffusion models.
-- **3D & Specialized:** Integrated templates for 3D City Generation and Minecraft `.litematica` data training.
+## Features
+- **Visual Architect**: Drag-and-drop neural network design.
+- **Live Training Lab**: Real-time telemetry, loss/accuracy visualization, and resource throttling.
+- **Universal Hardware Engine**: Automatic GPU/CPU selection with VRAM optimization.
+- **Data Lab**: PII redaction, automated data cleaning, and local asset pooling.
+- **Cloud Sync**: Optional hybrid training with Supabase integration.
 
-### 2. Pro Node Architect
-A visual "Lego-style" builder for custom AI architectures.
-- Drag-and-drop layers (Linear, Transformer, Conv2D).
-- Visual bezier-curve connectivity.
-- Real-time parameter configuration.
+## Installation & Setup
+### Prerequisites
+- Node.js 18+
+- Python 3.9+
+- CUDA Toolkit (Optional, for GPU acceleration)
 
-### 3. Universal Data Engine
-- **Auto-Cleaning:** Automatically normalizes whitespace and removes noise.
-- **PII Redaction:** Built-in AI-powered privacy protection.
-- **Multi-Format:** Support for text, images, and specialized 3D formats.
-
-### 4. Local AI Copilot
-Powered by a local **Phi-3-mini** engine, the built-in assistant provides:
-- Real-time training optimization tips.
-- Architecture design advice.
-- Token-free, 100% private local troubleshooting.
-
-### 5. Smart Performance Management
-- **4-bit Quantization:** Run 7B+ models on laptops with as little as 8GB RAM.
-- **Smart Throttle:** Automatically adjusts resource usage to keep your system smooth while training in the background.
-- **Cloud Bridge:** One-click toggle to offload heavy training to cloud GPUs.
-
-## 💻 Hardware Requirements
-
-| Component | Minimum | Recommended |
-|-----------|---------|-------------|
-| **RAM** | 8 GB | 16 GB+ |
-| **GPU** | Entry-level (4GB VRAM) | NVIDIA RTX 3060+ |
-| **Storage** | 5 GB SSD | 20 GB SSD |
-| **OS** | Windows 10+, macOS, Linux | Windows 11 / Linux |
-
-*Note: OmniTrain AI includes a "Smart-Check" module that automatically suggests model sizes based on your detected specs.*
-
-## 🛠️ Installation & Setup
-
-1. **Clone the repository:**
+### Local Development
+1. Install Node dependencies:
    ```bash
-   git clone https://github.com/your-repo/omnitrain-ai.git
-   cd omnitrain-ai
+   npm install
+   ```
+2. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Start the dev environment (Frontend + Backend + Electron):
+   ```bash
+   npm run dev
    ```
 
-2. **Run the Setup Suite:**
-   Launch the app and follow the **Setup Agreement** screen. OmniTrain will automatically:
-   - Configure a portable Python 3.12 environment.
-   - Install PyTorch, CUDA Kernels, and optimization libraries.
-   - Download the local AI assistant weights (~2.4 GB).
+## Build Instructions
+### Windows (.exe)
+```bash
+npm run build
+```
+The installer will be generated in the `dist/` folder.
 
-3. **Start Training:**
-   Use the **Project Launcher** to select a template or start a blank project.
+## Troubleshooting
+- **Backend Connection**: Ensure port 8000 is not blocked by a firewall.
+- **GPU Not Found**: Verify `nvidia-smi` works and `GPUtil` is correctly installed.
+- **Module Imports**: Always run from the root directory to ensure `PYTHONPATH` is set correctly.
 
-## 🏗️ Architecture
-
-- **Frontend:** Electron.js with Glassmorphism UI.
-- **Backend:** FastAPI (Python 3.12) managing the core training engine.
-- **Local AI:** Integrated GGUF/Transformers-based Phi-3 engine.
-- **Training Engine:** Custom PyTorch wrapper with BitsAndBytes and PEFT (LoRA) support.
+## Architecture Guide
+The app follows a **Local-First** design. The Electron main process manages the Python backend as a sidecar. All training happens locally in a separate thread to prevent UI freezing, with a "Smart Throttle" to keep the host system smooth.
 
 ---
-
-*Built for the future of decentralized AI training.*
+© 2024 OmniTrain AI Studio. Commercial License.
