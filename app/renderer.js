@@ -285,19 +285,45 @@ function updateLog(status) {
 }
 
 async function startTraining() {
-    const config = { mode: 'pro' };
+    const type = document.getElementById('model-type').value;
+    const throttle = document.getElementById('throttle-slider').value / 100;
+    const config = { type, throttle_limit: throttle };
+
     await fetch('http://127.0.0.1:8000/start-training', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config)
     });
     switchTab('training');
+    lossHistory = []; // Reset chart for new run
 }
 
 async function stopTraining() {
-    // In real app, call DELETE or POST to stop
+    await fetch('http://127.0.0.1:8000/stop-training', { method: 'POST' });
     document.getElementById('training-status-badge').innerText = 'IDLE';
     document.getElementById('training-status-badge').style.color = 'var(--text-low)';
+}
+
+async function runTest() {
+    const inputStr = document.getElementById('test-input').value || "0,0,0,0,0,0,0,0,0,0";
+    const data = inputStr.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+
+    // Ensure exactly 10 inputs for the SimpleModel
+    while(data.length < 10) data.push(0);
+    const finalData = data.slice(0, 10);
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/test-model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: finalData })
+        });
+        const result = await response.json();
+        document.getElementById('test-result').innerText = `Result: ${result.prediction.toFixed(4)}`;
+        addChatBubble(`Model Test Success: Predicted value is ${result.prediction.toFixed(4)}`, 'var(--success)');
+    } catch (e) {
+        document.getElementById('test-result').innerText = `Result: Error`;
+    }
 }
 
 // --- Data Lab Logic ---
@@ -358,5 +384,22 @@ function addChatBubble(text, color) {
 
 // Init
 document.getElementById('ai-input').onkeypress = (e) => { if(e.key === 'Enter') sendAiMessage(); };
+
+// Settings Tab logic
+document.getElementById('save-settings').addEventListener('click', () => {
+    const licenseKey = document.getElementById('license-key').value;
+    if (licenseKey === "PRO-TR4IN-2024") {
+        showNotification(`PRO License Activated!`);
+        document.querySelector('.version-badge').textContent = 'v1.0.0-ENTERPRISE';
+        document.querySelector('.version-badge').style.background = 'var(--accent)';
+    } else {
+        showNotification(`Settings saved. ${licenseKey ? 'Invalid key - ' : ''}Running in Community Mode.`);
+    }
+});
+
+function showNotification(msg) {
+    addChatBubble(`System: ${msg}`, 'var(--accent)');
+}
+
 setInterval(fetchHW, 3000);
 fetchHW();

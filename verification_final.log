@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/app/backend/main.py", line 8, in <module>
+    from .hardware_detector import HardwareDetector
+ImportError: attempted relative import with no known parent package

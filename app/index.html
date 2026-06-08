@@ -176,12 +176,28 @@
                                 <label style="display: block; font-size: 0.8rem; color: var(--text-mid); margin-bottom: 8px;">Learning Rate</label>
                                 <input type="range" min="1" max="100" value="10" style="width: 100%;">
                             </div>
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 0.8rem; color: var(--text-mid); margin-bottom: 8px;">Model Architecture</label>
+                                <select id="model-type" style="width: 100%; background: var(--bg-deep); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 6px;">
+                                    <option value="Tabular">Tabular (Synthetic)</option>
+                                    <option value="Text">Text (Transformer)</option>
+                                    <option value="Image">Image (CNN)</option>
+                                    <option value="3D">3D (Point Cloud)</option>
+                                </select>
+                            </div>
                             <div style="margin-bottom: 30px;">
                                 <label style="display: block; font-size: 0.8rem; color: var(--text-mid); margin-bottom: 8px;">Throttle Limit</label>
                                 <input type="range" id="throttle-slider" min="10" max="100" value="80" style="width: 100%;">
                             </div>
                             <button id="start-btn" class="btn-pro" style="width: 100%; margin-bottom: 12px;" onclick="startTraining()">START TRAINING</button>
-                            <button id="stop-btn" class="btn-pro secondary" style="width: 100%;" onclick="stopTraining()">EMERGENCY STOP</button>
+                            <button id="stop-btn" class="btn-pro secondary" style="width: 100%; margin-bottom: 24px;" onclick="stopTraining()">EMERGENCY STOP</button>
+
+                            <div class="glass-card" style="padding: 15px; margin-top: 20px;">
+                                <h4 style="margin: 0 0 10px 0;">Model Inference Test</h4>
+                                <input type="text" id="test-input" placeholder="e.g. 1,0.5,-1..." style="width: 100%; background: var(--bg-deep); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 6px; margin-bottom: 10px; font-size: 0.8rem;">
+                                <button class="btn-pro" style="width: 100%;" onclick="runTest()">RUN TEST</button>
+                                <div id="test-result" style="margin-top: 10px; font-family: monospace; font-size: 0.8rem; color: var(--accent);">Result: --</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -197,8 +213,8 @@
                         <h3>License Management</h3>
                         <p style="color: var(--text-mid);">Manage your commercial license and activation.</p>
                         <div style="display: flex; gap: 12px; margin-top: 20px;">
-                            <input type="password" placeholder="Enter License Key..." style="flex: 1; background: var(--bg-deep); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px;">
-                            <button class="btn-pro secondary" onclick="alert('Validating license...')">ACTIVATE</button>
+                            <input type="password" id="license-key" placeholder="Enter License Key..." style="flex: 1; background: var(--bg-deep); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px;">
+                            <button class="btn-pro secondary" id="save-settings">ACTIVATE</button>
                         </div>
                     </div>
                 </div>

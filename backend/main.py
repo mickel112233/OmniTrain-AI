@@ -5,12 +5,20 @@ from pydantic import BaseModel
 import psutil
 import os
 import asyncio
-from .hardware_detector import HardwareDetector
-from .data_engine import DataEngine
-from .training_engine import TrainingEngine
-from .local_ai import LocalAIAssistant
-from .setup_checker import check_dependencies, get_system_readiness
-from .template_manager import TemplateManager
+try:
+    from .hardware_detector import HardwareDetector
+    from .data_engine import DataEngine
+    from .training_engine import TrainingEngine
+    from .local_ai import LocalAIAssistant
+    from .setup_checker import check_dependencies, get_system_readiness
+    from .template_manager import TemplateManager
+except ImportError:
+    from hardware_detector import HardwareDetector
+    from data_engine import DataEngine
+    from training_engine import TrainingEngine
+    from local_ai import LocalAIAssistant
+    from setup_checker import check_dependencies, get_system_readiness
+    from template_manager import TemplateManager
 
 app = FastAPI()
 
@@ -91,8 +99,20 @@ async def data_action(action: str, file_path: str):
 
 @app.post("/start-training")
 async def start_training(config: dict, background_tasks: BackgroundTasks):
-    background_tasks.add_task(training_engine.start_training, config)
-    return {"status": "Training started", "config": config}
+    # Unwrap config if nested
+    actual_config = config.get("config", config)
+    background_tasks.add_task(training_engine.start_training, actual_config)
+    return {"status": "Training started", "config": actual_config}
+
+@app.post("/stop-training")
+async def stop_training():
+    training_engine.stop_training()
+    return {"status": "Training stopped"}
+
+@app.post("/test-model")
+async def test_model(input_data: dict):
+    # Expects {"data": [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}
+    return training_engine.test_inference(input_data.get("data", []))
 
 @app.get("/training-status")
 def get_training_status():

@@ -7,13 +7,59 @@ try:
 except ImportError:
     torch = None
 
-class SimpleModel(nn.Module):
-    def __init__(self):
-        super(SimpleModel, self).__init__()
-        self.fc = nn.Linear(10, 1)
+class TabularModel(nn.Module):
+    def __init__(self, input_dim=10):
+        super(TabularModel, self).__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, 32),
+            nn.ReLU(),
+            nn.Linear(32, 1)
+        )
 
     def forward(self, x):
+        return self.net(x)
+
+class TextModel(nn.Module):
+    # Small Transformer for low-spec LLM training
+    def __init__(self, vocab_size=1000, embed_dim=64):
+        super(TextModel, self).__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        self.transformer = nn.TransformerEncoderLayer(d_model=embed_dim, nhead=4, batch_first=True)
+        self.fc = nn.Linear(embed_dim, vocab_size)
+
+    def forward(self, x):
+        x = self.embedding(x)
+        x = self.transformer(x)
         return self.fc(x)
+
+class ImageModel(nn.Module):
+    # Small CNN for image classification/generation
+    def __init__(self):
+        super(ImageModel, self).__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(3, 16, 3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Flatten(),
+            nn.Linear(16 * 16 * 16, 10) # Assuming 32x32 input
+        )
+
+    def forward(self, x):
+        return self.conv(x)
+
+class Model3D(nn.Module):
+    # MLP for point cloud or voxel processing
+    def __init__(self):
+        super(Model3D, self).__init__()
+        self.net = nn.Sequential(
+            nn.Linear(3, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64),
+            nn.ReLU(),
+            nn.Linear(64, 3)
+        )
+    def forward(self, x):
+        return self.net(x)
 
 class TrainingEngine:
     def __init__(self):
@@ -21,33 +67,61 @@ class TrainingEngine:
         self.throttle_limit = 0.8
         self.current_loss = 0.0
         self.current_epoch = 0
+        self.model = None
 
     def start_training(self, config):
+        if self.is_training:
+            print("Training already in progress. Skipping.")
+            return
+
         self.is_training = True
-        print(f"Starting functional training session: {config}")
+        model_type = config.get("type", "Tabular")
+        print(f"Starting functional {model_type} training session: {config}")
 
         if torch is None:
             print("Torch not available. Falling back to simulation.")
             self._simulate_training()
             return
 
-        # Simple real training on synthetic data to prove engine works
-        model = SimpleModel()
-        criterion = nn.MSELoss()
-        optimizer = optim.SGD(model.parameters(), lr=0.01)
+        # Initialize requested model architecture
+        if model_type == "Text":
+            self.model = TextModel()
+            inputs = torch.randint(0, 1000, (10, 20))
+            targets = torch.randint(0, 1000, (10, 20))
+            criterion = nn.CrossEntropyLoss()
+        elif model_type == "Image":
+            self.model = ImageModel()
+            inputs = torch.randn(10, 3, 32, 32)
+            targets = torch.randint(0, 10, (10,))
+            criterion = nn.CrossEntropyLoss()
+        elif model_type == "3D":
+            self.model = Model3D()
+            inputs = torch.randn(100, 3)
+            targets = torch.randn(100, 3)
+            criterion = nn.MSELoss()
+        else:
+            self.model = TabularModel()
+            inputs = torch.randn(100, 10)
+            targets = torch.randn(100, 1)
+            criterion = nn.MSELoss()
 
-        inputs = torch.randn(100, 10)
-        targets = torch.randn(100, 1)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
 
         for epoch in range(1, 21): # 20 real epochs
             if not self.is_training:
                 break
 
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
+            self.optimizer.zero_grad()
+            outputs = self.model(inputs)
+
+            if model_type in ["Text", "Image"]:
+                loss = criterion(outputs.view(-1, outputs.size(-1)) if model_type == "Text" else outputs,
+                                 targets.view(-1) if model_type == "Text" else targets)
+            else:
+                loss = criterion(outputs, targets)
+
             loss.backward()
-            optimizer.step()
+            self.optimizer.step()
 
             self.current_epoch = epoch
             self.current_loss = loss.item()
@@ -82,6 +156,19 @@ class TrainingEngine:
         # Ultra-low-spec mode: Reduces batch accumulation and precision
         print("Fast-Train Mode Active: Optimizing for low-end hardware.")
         self.throttle_limit = 0.95
+
+    def test_inference(self, data: list):
+        if self.model is None or torch is None:
+            return {"error": "Model not trained or Torch not available"}
+
+        try:
+            self.model.eval()
+            with torch.no_grad():
+                input_tensor = torch.tensor([data], dtype=torch.float32)
+                output = self.model(input_tensor)
+                return {"prediction": output.item(), "status": "Inference Complete"}
+        except Exception as e:
+            return {"error": str(e)}
 
     def stop_training(self):
         self.is_training = False
