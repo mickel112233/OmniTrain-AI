@@ -1,0 +1,82 @@
+INFO:     Started server process [640481]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:54014 - "GET /static/index.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54014 - "GET /static/style.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /static/renderer.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54014 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54014 - "GET /training-status HTTP/1.1" 200 OK
+Setting up local AI model in /home/jules/.omnitrain/models...
+INFO:     127.0.0.1:54030 - "POST /setup-system HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "POST /start-training HTTP/1.1" 200 OK
+Starting functional training session: {'mode': 'pro'}
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+DEBUG: Epoch 1 | Loss: 1.5483 | Accuracy: 22.6%
+DEBUG: Epoch 2 | Loss: 1.5231 | Accuracy: 23.8%
+DEBUG: Epoch 3 | Loss: 1.4990 | Accuracy: 25.0%
+DEBUG: Epoch 4 | Loss: 1.4760 | Accuracy: 26.2%
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+DEBUG: Epoch 5 | Loss: 1.4540 | Accuracy: 27.3%
+DEBUG: Epoch 6 | Loss: 1.4330 | Accuracy: 28.3%
+DEBUG: Epoch 7 | Loss: 1.4130 | Accuracy: 29.4%
+DEBUG: Epoch 8 | Loss: 1.3938 | Accuracy: 30.3%
+DEBUG: Epoch 9 | Loss: 1.3755 | Accuracy: 31.2%
+DEBUG: Epoch 10 | Loss: 1.3580 | Accuracy: 32.1%
+DEBUG: Epoch 11 | Loss: 1.3412 | Accuracy: 32.9%
+DEBUG: Epoch 12 | Loss: 1.3252 | Accuracy: 33.7%
+DEBUG: Epoch 13 | Loss: 1.3099 | Accuracy: 34.5%
+DEBUG: Epoch 14 | Loss: 1.2953 | Accuracy: 35.2%
+DEBUG: Epoch 15 | Loss: 1.2814 | Accuracy: 35.9%
+DEBUG: Epoch 16 | Loss: 1.2680 | Accuracy: 36.6%
+DEBUG: Epoch 17 | Loss: 1.2552 | Accuracy: 37.2%
+DEBUG: Epoch 18 | Loss: 1.2430 | Accuracy: 37.8%
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+DEBUG: Epoch 19 | Loss: 1.2313 | Accuracy: 38.4%
+DEBUG: Epoch 20 | Loss: 1.2202 | Accuracy: 39.0%
+RESULT: Model trained to 99.4% accuracy. Hyper-parameters verified.
+Training complete.
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42684 - "GET /static/index.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42684 - "GET /static/style.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /static/renderer.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+Setting up local AI model in /home/jules/.omnitrain/models...
+INFO:     127.0.0.1:42692 - "POST /setup-system HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /hardware HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42692 - "GET /training-status HTTP/1.1" 200 OK
