@@ -136,6 +136,15 @@
                         </div>
                     </div>
 
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-bottom: 30px;">
+                        <div class="glass-card">
+                            <h4 style="margin: 0; color: var(--text-low); text-transform: uppercase; font-size: 0.75rem;">Training Pool</h4>
+                            <div id="pool-count" style="font-size: 2rem; font-weight: 700; margin: 10px 0;">0 Files</div>
+                            <div id="pool-size" style="font-size: 0.9rem; color: var(--accent);">0 KB total</div>
+                            <div id="pool-readiness" style="font-size: 0.7rem; margin-top: 10px; color: var(--text-mid);">Awaiting Data...</div>
+                        </div>
+                    </div>
+
                     <div class="glass-card" style="height: 300px;">
                         <h4 style="margin: 0 0 20px 0; color: var(--text-low); text-transform: uppercase; font-size: 0.75rem;">Live Training Analytics</h4>
                         <div style="position: relative; height: 200px; width: 100%;">
@@ -225,7 +234,7 @@
                     <div class="glass-card" style="margin-bottom: 24px;">
                         <div style="display: flex; gap: 12px; margin-bottom: 24px;">
                             <input type="text" id="data-input" placeholder="Enter file path or URL..." style="flex: 1; background: var(--bg-deep); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px;">
-                            <button class="btn-pro" onclick="processData()">PROCESS</button>
+                            <button class="btn-pro" onclick="processData()">CLEAN & ADD TO AI</button>
                         </div>
                         <div id="data-results" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
                             <!-- Data cards will appear here -->

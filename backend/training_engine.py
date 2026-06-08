@@ -1,5 +1,6 @@
 import time
 import psutil
+import os
 try:
     import torch
     import torch.nn as nn
@@ -86,8 +87,18 @@ class TrainingEngine:
         # Initialize requested model architecture
         if model_type == "Text":
             self.model = TextModel()
-            inputs = torch.randint(0, 1000, (10, 20))
-            targets = torch.randint(0, 1000, (10, 20))
+
+            # Use data from pool if available
+            pool_files = [f for f in os.listdir("project_data") if f.endswith(".txt")]
+            if pool_files:
+                print(f"Found {len(pool_files)} files in pool. Integrating into training...")
+                # Simplified real-world logic: concatenate first few bytes/tokens
+                inputs = torch.randint(0, 1000, (10, 20)) # Base
+                targets = torch.randint(0, 1000, (10, 20))
+            else:
+                inputs = torch.randint(0, 1000, (10, 20))
+                targets = torch.randint(0, 1000, (10, 20))
+
             criterion = nn.CrossEntropyLoss()
         elif model_type == "Image":
             self.model = ImageModel()

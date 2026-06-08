@@ -8,6 +8,18 @@ class DataEngine:
             ".txt", ".pdf", ".jpg", ".png", ".wav", ".mp3",
             ".obj", ".fbx", ".litematica", ".schematic", ".json", ".csv"
         ]
+        self.pool_dir = "project_data"
+        if not os.path.exists(self.pool_dir):
+            os.makedirs(self.pool_dir)
+
+    def get_pool_stats(self):
+        files = os.listdir(self.pool_dir)
+        total_size = sum(os.path.getsize(os.path.join(self.pool_dir, f)) for f in files)
+        return {
+            "file_count": len(files),
+            "total_size_kb": round(total_size / 1024, 2),
+            "status": "Ready for Training" if len(files) > 0 else "Awaiting Data"
+        }
 
     def process_file(self, file_path):
         if not os.path.exists(file_path):
@@ -45,7 +57,17 @@ class DataEngine:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write("\n".join(cleaned_content))
 
-            return {"status": "Text Cleaning Complete", "output": output_path, "lines": len(cleaned_content)}
+            # Add to Training Pool
+            pool_file = os.path.join(self.pool_dir, f"data_{len(os.listdir(self.pool_dir))}.txt")
+            with open(pool_file, 'w', encoding='utf-8') as f:
+                f.write("\n".join(cleaned_content))
+
+            return {
+                "status": "Success: Data Cleaned & Added to Pool",
+                "output": output_path,
+                "pool_path": pool_file,
+                "lines": len(cleaned_content)
+            }
         except Exception as e:
             return {"error": str(e)}
 

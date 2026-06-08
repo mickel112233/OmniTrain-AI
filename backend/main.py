@@ -81,10 +81,12 @@ async def setup_system():
 def get_hardware():
     specs = detector.get_specs()
     capability = detector.suggest_capability(specs)
+    pool_stats = data_engine.get_pool_stats()
     return {
         "specs": specs,
         "capability": capability,
-        "cpu_usage": psutil.cpu_percent()
+        "cpu_usage": psutil.cpu_percent(),
+        "data_pool": pool_stats
     }
 
 @app.post("/upload-data")

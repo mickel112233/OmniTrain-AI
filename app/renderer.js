@@ -232,6 +232,14 @@ async function fetchHW() {
         document.getElementById('ram-stat').innerText = data.specs.ram_total_gb + " GB";
         document.getElementById('gpu-stat').innerText = data.specs.gpus.length > 0 ? data.specs.gpus[0].name : "NO GPU DETECTED";
 
+        // Data Pool Stats
+        if (data.data_pool) {
+            document.getElementById('pool-count').innerText = data.data_pool.file_count + " Files";
+            document.getElementById('pool-size').innerText = data.data_pool.total_size_kb + " KB total";
+            document.getElementById('pool-readiness').innerText = data.data_pool.status;
+            document.getElementById('pool-readiness').style.color = data.data_pool.file_count > 0 ? 'var(--success)' : 'var(--text-mid)';
+        }
+
         // Update Training Chart
         const statusRes = await fetch('http://127.0.0.1:8000/training-status');
         const statusData = await statusRes.json();
