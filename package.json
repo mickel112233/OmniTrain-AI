@@ -2,6 +2,10 @@
   "name": "omnitrain-ai-pro",
   "version": "1.0.0",
   "description": "Production-grade Universal AI Training Studio",
+  "author": {
+    "name": "OmniTrain AI",
+    "email": "contact@omnitrain.ai"
+  },
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:electron\"",
@@ -51,8 +55,22 @@
       "package.json"
     ],
     "win": {
-      "target": "nsis",
+      "target": [
+        "nsis",
+        "portable"
+      ],
       "icon": "frontend/public/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development"
     }
   }
 }
